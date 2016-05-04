@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.backendless.Backendless;
 import com.example.mathew.movies.DataClasses.Movies;
+import com.example.mathew.movies.Micelaus.UserValidation;
 import com.example.mathew.movies.RESTbackend.CRUDhandler;
 import com.example.mathew.movies.RESTbackend.ConnectionResponse;
 import com.example.mathew.movies.RESTbackend.RestCommunicator;
@@ -28,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
+
                 ConnectionResponse poslednaOdpoved = CRUDhandler.GET(); //takto volam GET
                 ArrayList<Movies> filmy = poslednaOdpoved.getFilmy(); //takto ziskam zoznam filmou (pozri triedu ConnectionResponse)
-                Movies film = filmy.get(1);
-                CRUDhandler.PUT(film); //PUT
-                CRUDhandler.POST(film); //PUT
-                CRUDhandler.DELETE(film); //PUT
+                for(Movies film : filmy) {
+                    System.out.println(film.toString());
+                }
 
             }catch(Exception e){e.printStackTrace();}
 

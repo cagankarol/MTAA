@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.mathew.movies.DataClasses.JsonProcesing;
 import com.example.mathew.movies.DataClasses.Movies;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static java.lang.String.*;
@@ -17,13 +18,16 @@ import static java.lang.String.*;
 public class RestConfig{
 
     private static URL moviesURL;
-    private int type; //1 - GET, 2-PUT, 3-POST, 4-DELETE
+    private static URL usersURL;
+    private URL variableURL;
+    private int type; //1 - GET, 2-PUT, 3-POST, 4-DELETE, 5-opakovany request
     private static Movies film;
 
     //nakonfigurujeme aj URL
     static {
         try {
             moviesURL = new URL("https://api.backendless.com/v1/data/Movies");
+            usersURL = new URL("https://api.backendless.com/v1/data/Users");
         }
         catch (Exception e){
             Log.e("URL", e.getClass() + ": " + e.getMessage());
@@ -34,6 +38,11 @@ public class RestConfig{
 
     //vracia URL
     public URL getURL(){
+        //ak sa jedna o user autentikaciu
+        if(this.type==5){
+            return variableURL;
+        }
+
         //ak vraciame URL pre DELETE a PUT
         if(this.type==4 || this.type==2){
             try {
@@ -58,6 +67,8 @@ public class RestConfig{
                 return "POST"; //pridanie noveho objektu
             case 4:
                 return "DELETE"; //zmazem entitu
+            case 5:
+                return "GET"; //opakovane volanie
         }
         return "";
     }
@@ -70,6 +81,16 @@ public class RestConfig{
     //konstruktor na GET
     public RestConfig(int type) {
         this.type = type;
+    }
+
+    //konstruktor na opakovany GET
+    public RestConfig(String URLka) {
+        this.type = 5;
+        try {
+            this.variableURL = new URL(URLka);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     //konstruktor pre POST, PUT, DELETE, treba pridat aj entitu o mazem
